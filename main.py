@@ -4,6 +4,7 @@ import sys
 import time
 from dotenv import load_dotenv
 from rich.console import Console
+from rich.markdown import Markdown
 import colorama
 import sys
 import time
@@ -58,11 +59,15 @@ def typing_effect(num: int, text: str, style: str) -> None:
         console.print(f"An error occurred: {e}")
 
 
-def format_message(message: str) -> str:
-    message = message.replace("**", "[bold]").replace("**", "[/bold]", 1)
-    message = message.replace("`", "[i]").replace("`", "[/i]", 1)
-    return message
+# def format_message(message: str) -> str:
+#     message = message.replace("**", "[bold]").replace("**", "[/bold]", 1)
+#     message = message.replace("`", "[i]").replace("`", "[/i]", 1)
+#     return message
 
+def render_markdown(text):
+    console = Console()
+    markdown = Markdown(text)
+    console.print(markdown)
 
 def Main_Loop() -> None:
     i = 0
@@ -77,10 +82,11 @@ def Main_Loop() -> None:
                 f"{RED}>>> ", colorama.Fore.GREEN))
         completion = client.chat.completions.create(
             model="meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo", messages=[{"role": "user", "content": message}])
-        formatted_message = format_message(
-            completion.choices[0].message.content)
-        typing_effect(0.05, formatted_message,
-                      style="bold blue")
+        # formatted_message = format_message(
+        #     completion.choices[0].message.content)
+        # typing_effect(0.05, formatted_message,
+        #               style="bold blue")
+        render_markdown(completion.choices[0].message.content)
         i += 1
 
 
